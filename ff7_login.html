@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - FF7</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a2a, #1a1a4a);
+            color: #e0e0ff;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Animação de estrelas */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        /* Container principal */
+        .container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Painel esquerdo - Login */
+        .login-panel {
+            width: 40%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(10, 15, 30, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 2px solid #4aa7ff;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: glow 2s infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #4aa7ff; }
+            to { text-shadow: 0 0 20px #4aa7ff, 0 0 30px #4aa7ff; }
+        }
+        
+        .login-form {
+            max-width: 300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4aa7ff;
+            font-size: 14px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(20, 25, 50, 0.7);
+            border: 1px solid #4aa7ff;
+            border-radius: 4px;
+            color: #e0f0ff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #ffcc00;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, #4aa7ff, #2a5be0);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(74, 167, 255, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+            transition: all 0.6s;
+        }
+        
+        .btn:hover::after {
+            transform: rotate(30deg) translate(20%, 20%);
+        }
+        
+        .message {
+            height: 20px;
+            margin-top: 10px;
+            text-align: center;
+            color: #ff5555;
+            font-size: 14px;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        /* Painel direito - Preview do Cloud */
+        .preview-panel {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .character-card {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            border: 2px solid #4aa7ff;
+            box-shadow: 0 0 20px rgba(74, 167, 255, 0.3);
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+        
+        .character-card:hover {
+            transform: rotateY(5deg) rotateX(5deg);
+        }
+        
+        .character-image {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #4aa7ff, #2a5be0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #ffcc00;
+            overflow: hidden;
+        }
+        
+        .character-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .character-name {
+            font-size: 28px;
+            color: #ffcc00;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+        
+        .attributes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .attribute {
+            background: rgba(40, 45, 70, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #4aa7ff;
+        }
+        
+        .attribute-value {
+            color: #ffcc00;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .hearts-container {
+            margin-top: 30px;
+        }
+        
+        .hearts-btn {
+            background: linear-gradient(to right, #ff3366, #cc0066);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .hearts-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+        }
+        
+        /* Página do perfil (inicialmente oculta) */
+        .profile-page {
+            display: none;
+            padding: 40px;
+            width: 100%;
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 51, 102, 0.2);
+            border: 1px solid #ff3366;
+            color: #ff3366;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 51, 102, 0.4);
+        }
+        
+        /* Corações animados */
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            animation: float 3s ease-in-out forwards;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animação de estrelas no fundo -->
+    <div class="stars" id="stars-container"></div>
+    
+    <!-- Container principal -->
+    <div class="container">
+        <!-- Painel de Login -->
+        <div class="login-panel" id="loginPanel">
+            <div class="logo">
+                <h1>FINAL FANTASY VII</h1>
+                <p>ACESSO SOLDIER</p>
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="input-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" name="username" placeholder="Digite seu usuário" autocomplete="off">
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••">
+                </div>
+                
+                <button type="submit" class="btn">ACESSAR SISTEMA</button>
+                <div class="message" id="message"></div>
+            </form>
+        </div>
+        
+        <!-- Painel de Preview do Cloud -->
+        <div class="preview-panel">
+            <div class="character-card">
+                <div class="character-image">
+                    <img src="https://i.imgur.com/3M8b7dO.png" alt="Cloud Strife">
+                </div>
+                <h2 class="character-name">CLOUD STRIFE</h2>
+                
+                <div class="attributes">
+                    <div class="attribute">
+                        <div>ATAQUE</div>
+                        <div class="attribute-value">85</div>
+                    </div>
+                    <div class="attribute">
+                        <div>DEFESA</div>
+                        <div class="attribute-value">60</div>
+                    </div>
+                    <div class="attribute">
+                        <div>MAGIA</div>
+                        <div class="attribute-value">40</div>
+                    </div>
+                    <div class="attribute">
+                        <div>NÍVEL</div>
+                        <div class="attribute-value">50</div>
+                    </div>
+                </div>
+                
+                <div class="hearts-container">
+                    <button class="hearts-btn" id="heartsBtn">LIBERAR MATÉRIA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Página do Perfil (inicialmente oculta) -->
+    <div class="profile-page" id="profilePage">
+        <button class="logout-btn" id="logoutBtn">SAIR</button>
+        
+        <div class="profile-header">
+            <h1>PERFIL SOLDIER</h1>
+            <h2>CLOUD STRIFE - NÍVEL 50</h2>
+        </div>
+        
+        <div class="character-card" style="max-width: 600px; margin: 0 auto;">
+            <div class="character-image" style="width: 180px; height: 180px;">
+                <img src="https://i.imgur.com/3M8b7dO.png" alt="Cloud Strife">
+            </div>
+            
+            <div class="attributes" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="attribute">
+                    <div>HP</div>
+                    <div class="attribute-value">5,800</div>
+                </div>
+                <div class="attribute">
+                    <div>MP</div>
+                    <div class="attribute-value">320</div>
+                </div>
+                <div class="attribute">
+                    <div>EXP</div>
+                    <div class="attribute-value">128,450</div>
+                </div>
+                <div class="attribute">
+                    <div>ATAQUE</div>
+                    <div class="attribute-value">85</div>
+                </div>
+                <div class="attribute">
+                    <div>DEFESA</div>
+                    <div class="attribute-value">60</div>
+                </div>
+                <div class="attribute">
+                    <div>MAGIA</div>
+                    <div class="attribute-value">40</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h3 style="color: #4aa7ff; margin-bottom: 15px;">MATÉRIAS EQUIPADAS</h3>
+                <div style="display: flex; justify-content: center; gap: 10px;">
+                    <div style="background: rgba(40, 45, 70, 0.7); padding: 10px; border-radius: 5px; min-width: 100px;">
+                        <div>CURA</div>
+                        <div style="color: #ffcc00;">★ ★ ★</div>
+                    </div>
+                    <div style="background: rgba(40, 45, 70, 0.7); padding: 10px; border-radius: 5px; min-width: 100px;">
+                        <div>FUMAÇA</div>
+                        <div style="color: #ffcc00;">★ ★</div>
+                    </div>
+                    <div style="background: rgba(40, 45, 70, 0.7); padding: 10px; border-radius: 5px; min-width: 100px;">
+                        <div>GOLPE FINAL</div>
+                        <div style="color: #ffcc00;">★</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hearts-container" style="margin-top: 30px;">
+                <button class="hearts-btn" id="profileHeartsBtn">LIBERAR MATÉRIA</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Criar estrelas animadas
+        const starsContainer = document.getElementById('stars-container');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.width = `${Math.random() * 3 + 1}px`;
+            star.style.height = star.style.width;
+            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+            starsContainer.appendChild(star);
+        }
+        
+        // Referências aos elementos
+        const loginForm = document.getElementById('loginForm');
+        const message = document.getElementById('message');
+        const loginPanel = document.getElementById('loginPanel');
+        const profilePage = document.getElementById('profilePage');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const heartsBtn = document.getElementById('heartsBtn');
+        const profileHeartsBtn = document.getElementById('profileHeartsBtn');
+        
+        // Criar efeitos sonoros
+        const clickSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
+        const successSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
+        
+        // Função para criar corações
+        function createHearts(button) {
+            const rect = button.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = `${centerX}px`;
+                heart.style.top = `${centerY}px`;
+                heart.style.fontSize = `${Math.random() * 20 + 15}px`;
+                heart.style.animation = `float ${Math.random() * 2 + 2}s ease-in-out forwards`;
+                document.body.appendChild(heart);
+                
+                // Remover coração após animação
+                setTimeout(() => {
+                    heart.remove();
+                }, 3000);
+            }
+        }
+        
+        // Evento de login
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'cl7' && password === 'buster') {
+                // Login bem-sucedido
+                loginPanel.style.display = 'none';
+                profilePage.style.display = 'block';
+                
+                // Efeito de transição
+                document.body.style.background = 'linear-gradient(135deg, #1a2a4a, #0a1a2a)';
+                
+                // Efeito sonoro
+                if (successSound) {
+                    successSound.currentTime = 0;
+                    successSound.play();
+                }
+            } else {
+                // Login falhou
+                message.textContent = 'Acesso negado! Usuário ou senha incorretos.';
+                document.getElementById('username').style.borderColor = '#ff5555';
+                document.getElementById('password').style.borderColor = '#ff5555';
+                
+                // Resetar após 3 segundos
+                setTimeout(() => {
+                    message.textContent = '';
+                    document.getElementById('username').style.borderColor = '#4aa7ff';
+                    document.getElementById('password').style.borderColor = '#4aa7ff';
+                }, 3000);
+            }
+        });
+        
+        // Evento de logout
+        logoutBtn.addEventListener('click', () => {
+            profilePage.style.display = 'none';
+            loginPanel.style.display = 'flex';
+            document.body.style.background = 'linear-gradient(135deg, #0a0a2a, #1a1a4a)';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        });
+        
+        // Evento para soltar corações
+        heartsBtn.addEventListener('click', () => {
+            createHearts(heartsBtn);
+            if (clickSound) {
+                clickSound.currentTime = 0;
+                clickSound.play();
+            }
+        });
+        
+        profileHeartsBtn.addEventListener('click', () => {
+            createHearts(profileHeartsBtn);
+            if (clickSound) {
+                clickSound.currentTime = 0;
+                clickSound.play();
+            }
+        });
+        
+        // Efeito de digitação no campo de usuário
+        const usernameInput = document.getElementById('username');
+        usernameInput.addEventListener('focus', () => {
+            if (!usernameInput.value) {
+                usernameInput.value = 'c';
+                setTimeout(() => usernameInput.value = 'cl', 100);
+                setTimeout(() => usernameInput.value = 'cl7', 200);
+            }
+        });
+    </script>
+</body>
+                                                        </html>
